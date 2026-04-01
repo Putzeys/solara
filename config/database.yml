@@ -79,25 +79,12 @@ test:
 # for a full overview on how database connection configuration can be specified.
 #
 production:
-  primary: &primary_production
-    <<: *default
-    # Option A: Use DATABASE_URL (recommended for Docker / cloud deploys)
-    url: <%= ENV["DATABASE_URL"] %>
-    # Option B: Use individual credentials (uncomment below, remove url above)
-    # database: solara_production
-    # username: solara
-    # password: <%= ENV["SOLARA_DATABASE_PASSWORD"] %>
-    # host: localhost
-    # port: 5432
-  cache:
-    <<: *primary_production
-    database: solara_production_cache
-    migrations_paths: db/cache_migrate
-  queue:
-    <<: *primary_production
-    database: solara_production_queue
-    migrations_paths: db/queue_migrate
-  cable:
-    <<: *primary_production
-    database: solara_production_cable
-    migrations_paths: db/cable_migrate
+  <<: *default
+  # Option A: Use DATABASE_URL (recommended for Docker / cloud deploys)
+  url: <%= ENV["DATABASE_URL"] %>
+  # Option B: Use individual credentials (uncomment below, remove url above)
+  # database: solara_production
+  # username: solara
+  # password: <%= ENV["SOLARA_DATABASE_PASSWORD"] %>
+  # host: localhost
+  # port: 5432
