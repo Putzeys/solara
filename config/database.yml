@@ -81,9 +81,14 @@ test:
 production:
   primary: &primary_production
     <<: *default
-    database: solara_production
-    username: solara
-    password: <%= ENV["SOLARA_DATABASE_PASSWORD"] %>
+    # Option A: Use DATABASE_URL (recommended for Docker / cloud deploys)
+    url: <%= ENV["DATABASE_URL"] %>
+    # Option B: Use individual credentials (uncomment below, remove url above)
+    # database: solara_production
+    # username: solara
+    # password: <%= ENV["SOLARA_DATABASE_PASSWORD"] %>
+    # host: localhost
+    # port: 5432
   cache:
     <<: *primary_production
     database: solara_production_cache

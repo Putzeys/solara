@@ -72,18 +72,56 @@ Open `http://localhost:3000` and sign in:
 ### Docker (Production)
 
 ```bash
-# Copy environment template
-cp .env.example .env
-# Edit .env with your values (POSTGRES_PASSWORD, RAILS_MASTER_KEY, SECRET_KEY_BASE)
+# Clone on your server
+git clone https://github.com/Putzeys/solara.git
+cd solara
+
+# Create master.key (copy from your dev machine, NOT in git)
+echo "YOUR_MASTER_KEY" > config/master.key
+
+# Generate .env with real credentials
+cat > .env << EOF
+POSTGRES_PASSWORD=$(openssl rand -hex 16)
+SECRET_KEY_BASE=$(openssl rand -hex 64)
+RAILS_MASTER_KEY=$(cat config/master.key)
+EOF
 
 # Build and start
 docker compose up -d
 
 # Setup database (first time only)
-docker compose exec web bin/rails db:setup
+docker compose exec web bin/rails db:prepare
+docker compose exec web bin/rails db:seed
 ```
 
-The app runs on `127.0.0.1:3000`. Use nginx or Caddy as a reverse proxy with HTTPS.
+The app runs on port 3000 by default. Change the port in `docker-compose.yml` if needed:
+
+```yaml
+ports:
+  - "0.0.0.0:3080:80"  # Change 3080 to any free port
+```
+
+### Database Configuration
+
+The production database is configured in `config/database.yml`. Two options:
+
+**Option A — `DATABASE_URL` (default, recommended for Docker):**
+
+Set `DATABASE_URL` in your environment or `docker-compose.yml`. This is the default.
+
+**Option B — Individual credentials (for bare-metal installs):**
+
+Edit `config/database.yml`, comment out the `url:` line and uncomment the individual fields (`database`, `username`, `password`, `host`, `port`). Set `SOLARA_DATABASE_PASSWORD` in your environment.
+
+### Remote Access (Tailscale)
+
+If your server runs Tailscale, access Solara from any device on your tailnet:
+
+```
+http://YOUR-SERVER-TAILSCALE-IP:3080
+```
+
+Use `0.0.0.0` instead of `127.0.0.1` in `docker-compose.yml` ports to allow network access. Tailscale traffic is already encrypted, so HTTP is fine within your tailnet.
 
 ## API
 
