@@ -21,14 +21,13 @@ services:
       db:
         condition: service_healthy
     ports:
-      - "127.0.0.1:3000:80"
+      - "0.0.0.0:3080:80"
     env_file: .env
     environment:
       RAILS_ENV: production
       DATABASE_URL: postgresql://solara:${POSTGRES_PASSWORD:-solara_dev_password}@db:5432/solara_production
       RAILS_SERVE_STATIC_FILES: "true"
       RAILS_LOG_TO_STDOUT: "true"
-      SOLID_QUEUE_IN_PUMA: "true"
     volumes:
       - storage:/rails/storage
 
