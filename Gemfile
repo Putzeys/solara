@@ -41,7 +41,7 @@ gem "thruster", require: false
 gem "image_processing", "~> 1.2"
 
 # === Authentication ===
-gem "devise", "~> 4.9"
+gem "devise", "~> 5.0"
 
 # === Google Calendar ===
 gem "google-apis-calendar_v3"
