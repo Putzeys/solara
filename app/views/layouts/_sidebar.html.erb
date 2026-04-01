@@ -1,0 +1,129 @@
+<aside class="fixed inset-y-0 left-0 z-40 w-64 bg-gradient-to-b from-gray-900 to-gray-950 text-gray-300 flex flex-col h-full overflow-y-auto
+             -translate-x-full lg:translate-x-0 lg:static lg:z-auto transition-transform duration-300 ease-in-out"
+      data-sidebar-target="menu">
+  <!-- Logo -->
+  <div class="p-5 flex items-center gap-3">
+    <%= link_to root_path, class: "flex items-center gap-2 group" do %>
+      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707"/></svg>
+      </div>
+      <span class="text-lg font-bold text-white group-hover:text-indigo-300 transition-colors">Solara</span>
+    <% end %>
+    <!-- Close button (mobile) -->
+    <button class="lg:hidden ml-auto p-1 rounded-md hover:bg-gray-800 text-gray-400" data-action="click->sidebar#close">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="px-3 space-y-0.5">
+    <%= link_to root_path,
+        class: "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 #{current_date == Date.current && controller_name == 'dashboard' ? 'bg-white/10 text-white shadow-sm' : 'hover:bg-white/5 hover:text-white'}" do %>
+      <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="1.5"/><path stroke-width="1.5" d="M12 6v6l4 2"/></svg>
+      Today
+    <% end %>
+
+    <%= link_to day_path(date: Date.current + 1),
+        class: "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 #{current_date == Date.current + 1 ? 'bg-white/10 text-white shadow-sm' : 'hover:bg-white/5 hover:text-white'}" do %>
+      <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="1.5" d="M13 7l5 5-5 5M6 12h12"/></svg>
+      Tomorrow
+    <% end %>
+
+    <%= link_to backlog_path,
+        class: "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 #{controller_name == 'backlogs' ? 'bg-white/10 text-white shadow-sm' : 'hover:bg-white/5 hover:text-white'}" do %>
+      <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+      Backlog
+    <% end %>
+
+    <%= link_to weekly_objectives_path,
+        class: "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 #{controller_name == 'weekly_objectives' ? 'bg-white/10 text-white shadow-sm' : 'hover:bg-white/5 hover:text-white'}" do %>
+      <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+      Weekly Plan
+    <% end %>
+  </nav>
+
+  <div class="mt-5 mx-3 border-t border-white/5"></div>
+
+  <!-- Channels by Context -->
+  <div class="mt-4 px-3 flex-1">
+    <% contexts = current_user.contexts.active.ordered.includes(channels: []) %>
+    <% contexts.each do |context| %>
+      <div class="mb-5">
+        <div class="flex items-center justify-between px-3 mb-1.5">
+          <h3 class="text-[11px] font-semibold text-gray-500 uppercase tracking-widest"><%= context.name %></h3>
+        </div>
+        <div class="space-y-0.5">
+          <% context.channels.select { |c| !c.archived }.sort_by(&:position).each do |channel| %>
+            <%= link_to channel_path(channel),
+                class: "flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-sm transition-all duration-150 hover:bg-white/5 hover:text-white" do %>
+              <span class="w-2 h-2 rounded-full ring-2 ring-white/10" style="background-color: <%= channel.color %>"></span>
+              <span class="truncate"><%= channel.name %></span>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+    <% uncategorized = current_user.channels.active.where(context_id: nil).ordered %>
+    <% if uncategorized.any? %>
+      <div class="mb-5">
+        <h3 class="px-3 mb-1.5 text-[11px] font-semibold text-gray-500 uppercase tracking-widest">Other</h3>
+        <div class="space-y-0.5">
+          <% uncategorized.each do |channel| %>
+            <%= link_to channel_path(channel),
+                class: "flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-sm transition-all duration-150 hover:bg-white/5 hover:text-white" do %>
+              <span class="w-2 h-2 rounded-full ring-2 ring-white/10" style="background-color: <%= channel.color %>"></span>
+              <span class="truncate"><%= channel.name %></span>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+    <%= link_to channels_path, class: "flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs text-gray-500 transition-all duration-150 hover:bg-white/5 hover:text-gray-300" do %>
+      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="1.5" d="M12 4v16m8-8H4"/></svg>
+      Manage channels
+    <% end %>
+  </div>
+
+  <div class="mx-3 border-t border-white/5"></div>
+
+  <!-- Weekly Objectives -->
+  <div class="px-3 py-3">
+    <div class="flex items-center justify-between px-3 mb-1.5">
+      <h3 class="text-[11px] font-semibold text-gray-500 uppercase tracking-widest">This Week</h3>
+      <%= link_to new_weekly_objective_path, class: "p-0.5 rounded text-gray-500 hover:text-indigo-400 hover:bg-white/5 transition-colors", title: "Add goal" do %>
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+      <% end %>
+    </div>
+    <% objectives = current_user.weekly_objectives.for_week(Date.current).active.ordered %>
+    <% if objectives.any? %>
+      <div class="space-y-0.5">
+        <% objectives.each do |obj| %>
+          <%= link_to edit_weekly_objective_path(obj),
+              class: "flex items-center gap-2.5 px-3 py-1.5 text-sm rounded-lg transition-all duration-150 hover:bg-white/5 hover:text-white group" do %>
+            <div class="w-1.5 h-1.5 rounded-full bg-indigo-400 group-hover:bg-indigo-300"></div>
+            <span class="truncate"><%= obj.title %></span>
+          <% end %>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="px-3 text-xs text-gray-600 italic">No goals set yet</p>
+    <% end %>
+  </div>
+
+  <div class="mx-3 border-t border-white/5"></div>
+
+  <!-- User + Settings -->
+  <div class="p-3 space-y-1">
+    <%= link_to settings_path,
+        class: "flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all duration-150 #{controller_name == 'settings' ? 'bg-white/10 text-white' : 'hover:bg-white/5 hover:text-white'}" do %>
+      <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3" stroke-width="1.5"/></svg>
+      Settings
+    <% end %>
+    <div class="flex items-center justify-between px-3 py-1">
+      <span class="text-xs text-gray-600 truncate"><%= current_user.email %></span>
+      <%= link_to "Sign out", destroy_user_session_path, data: { turbo_method: :delete }, class: "text-xs text-gray-600 hover:text-gray-400 transition-colors" %>
+    </div>
+  </div>
+</aside>

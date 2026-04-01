@@ -1,0 +1,8 @@
+<div class="max-w-2xl mx-auto">
+  <h2 class="text-lg font-semibold text-gray-900 mb-4">All Tasks</h2>
+  <div class="space-y-1">
+    <% @tasks.each do |task| %>
+      <%= render "tasks/task", task: task %>
+    <% end %>
+  </div>
+</div>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html class="h-full bg-gray-50">
+  <head>
+    <title><%= content_for(:title) || "Solara" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Solara">
+    <meta name="theme-color" content="#4f46e5">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+    <script>
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("/service-worker.js");
+      }
+    </script>
+  </head>
+
+  <body class="h-full font-[Inter]">
+    <% if user_signed_in? %>
+      <div class="flex h-screen overflow-hidden" data-controller="sidebar">
+        <!-- Mobile overlay -->
+        <div class="fixed inset-0 bg-black/50 z-30 lg:hidden hidden" data-sidebar-target="overlay" data-action="click->sidebar#close"></div>
+
+        <!-- Sidebar -->
+        <%= render "layouts/sidebar" %>
+
+        <!-- Main content -->
+        <div class="flex-1 flex flex-col overflow-hidden min-w-0">
+          <!-- Top bar -->
+          <%= render "layouts/top_bar" %>
+
+          <!-- Flash messages -->
+          <% if notice %>
+            <div class="mx-4 mt-3 px-4 py-2.5 bg-emerald-50 text-emerald-700 rounded-lg text-sm flex items-center gap-2 animate-[fadeIn_0.3s_ease-out]" data-controller="flash" data-action="animationend->flash#dismiss">
+              <svg class="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+              <%= notice %>
+            </div>
+          <% end %>
+          <% if alert %>
+            <div class="mx-4 mt-3 px-4 py-2.5 bg-red-50 text-red-700 rounded-lg text-sm flex items-center gap-2">
+              <svg class="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+              <%= alert %>
+            </div>
+          <% end %>
+
+          <!-- Content area -->
+          <main class="flex-1 overflow-y-auto p-4 lg:p-6">
+            <%= yield %>
+          </main>
+
+          <!-- Timer bar -->
+          <turbo-frame id="timer_bar">
+            <%= render "layouts/timer_bar" %>
+          </turbo-frame>
+        </div>
+      </div>
+    <% else %>
+      <main class="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-purple-50">
+        <%= yield %>
+      </main>
+    <% end %>
+  </body>
+</html>

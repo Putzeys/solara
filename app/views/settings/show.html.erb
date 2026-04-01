@@ -1,0 +1,50 @@
+<div class="max-w-xl mx-auto">
+  <h2 class="text-lg font-semibold text-gray-900 mb-6">Settings</h2>
+
+  <%= form_with model: @user, url: settings_path, method: :patch, class: "space-y-6" do |f| %>
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Timezone</label>
+      <%= f.select :timezone, ActiveSupport::TimeZone.all.map { |tz| [tz.to_s, tz.name] },
+          {}, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm" %>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Daily hour target (minutes)</label>
+      <%= f.number_field :daily_hour_target, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm", min: 0, step: 30 %>
+      <p class="text-xs text-gray-500 mt-1">Default: 480 (8 hours). Recommended: 330 (5.5h) for focused work.</p>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Pomodoro work (min)</label>
+        <%= f.number_field :pomodoro_work_min, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm", min: 1 %>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Pomodoro break (min)</label>
+        <%= f.number_field :pomodoro_break_min, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm", min: 1 %>
+      </div>
+    </div>
+
+    <div>
+      <%= f.submit "Save", class: "inline-flex items-center px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-700 cursor-pointer" %>
+    </div>
+  <% end %>
+
+  <!-- API Token -->
+  <div class="mt-8 pt-6 border-t border-gray-200">
+    <h3 class="text-sm font-semibold text-gray-700 mb-2">API Token</h3>
+    <code class="text-xs bg-gray-100 p-2 rounded block break-all"><%= current_user.api_token %></code>
+    <p class="text-xs text-gray-500 mt-1">Use this token for API and MCP access.</p>
+  </div>
+
+  <!-- Google Calendar -->
+  <div class="mt-8 pt-6 border-t border-gray-200">
+    <h3 class="text-sm font-semibold text-gray-700 mb-2">Google Calendar</h3>
+    <% if current_user.calendar_integrations.active.any? %>
+      <p class="text-sm text-green-600">Connected</p>
+      <%= button_to "Disconnect", auth_google_calendar_path, method: :delete, class: "text-sm text-red-600 hover:text-red-800 mt-1" %>
+    <% else %>
+      <%= link_to "Connect Google Calendar", auth_google_calendar_path, class: "inline-flex items-center px-3 py-1.5 bg-white border border-gray-300 text-sm font-medium rounded-md hover:bg-gray-50" %>
+    <% end %>
+  </div>
+</div>

@@ -1,0 +1,31 @@
+<div class="max-w-2xl mx-auto">
+  <div class="flex items-center justify-between mb-4">
+    <h2 class="text-lg font-semibold text-gray-900">Backlog</h2>
+    <span class="text-sm text-gray-500"><%= @tasks.count %> tasks</span>
+  </div>
+
+  <!-- Quick add to backlog -->
+  <%= form_with model: Task.new, url: tasks_path, class: "flex items-center gap-2 mb-4" do |f| %>
+    <%# No scheduled_date = goes to backlog %>
+    <svg class="w-5 h-5 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+    <%= f.text_field :title,
+        placeholder: "Add to backlog...",
+        class: "flex-1 text-sm border-0 border-b border-gray-200 focus:border-indigo-500 focus:ring-0 py-1.5 px-0 placeholder-gray-400" %>
+    <%= f.submit "Add", class: "text-sm text-indigo-600 hover:text-indigo-800 font-medium cursor-pointer" %>
+  <% end %>
+
+  <!-- Backlog task list -->
+  <div class="space-y-1" data-controller="sortable" data-sortable-url-value="<%= reorder_tasks_path %>">
+    <% @tasks.each do |task| %>
+      <%= render "tasks/task", task: task %>
+    <% end %>
+
+    <% if @tasks.empty? %>
+      <div class="text-center py-12 text-gray-400">
+        <svg class="w-12 h-12 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+        <p class="text-sm">Your backlog is empty</p>
+        <p class="text-xs mt-1">Tasks without a date go here</p>
+      </div>
+    <% end %>
+  </div>
+</div>

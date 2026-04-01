@@ -1,0 +1,11 @@
+<%= form_with model: objective, class: "space-y-4" do |f| %>
+  <div>
+    <label class="block text-sm font-medium text-gray-700">Title</label>
+    <%= f.text_field :title, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm" %>
+  </div>
+  <%= f.hidden_field :week_start_date %>
+  <div class="flex gap-2">
+    <%= f.submit class: "px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-700 cursor-pointer" %>
+    <%= link_to "Cancel", weekly_objectives_path, class: "px-4 py-2 text-sm text-gray-700 hover:text-gray-900" %>
+  </div>
+<% end %>

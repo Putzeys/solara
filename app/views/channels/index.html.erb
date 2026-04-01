@@ -1,0 +1,26 @@
+<div class="max-w-xl mx-auto">
+  <div class="flex items-center justify-between mb-4">
+    <h2 class="text-lg font-semibold text-gray-900">Channels</h2>
+    <%= link_to "New Channel", new_channel_path, class: "px-3 py-1.5 text-sm bg-indigo-600 text-white rounded-md hover:bg-indigo-700" %>
+  </div>
+
+  <div class="space-y-2">
+    <% @channels.group_by(&:context).each do |context, channels| %>
+      <div class="mb-4">
+        <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2"><%= context&.name || "Uncategorized" %></h3>
+        <% channels.each do |channel| %>
+          <div class="flex items-center justify-between px-3 py-2 bg-white rounded-md border border-gray-200">
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full" style="background-color: <%= channel.color %>"></span>
+              <%= link_to channel.name, channel_path(channel), class: "text-sm font-medium text-gray-800 hover:text-indigo-600" %>
+            </div>
+            <div class="flex gap-2">
+              <%= link_to "Edit", edit_channel_path(channel), class: "text-xs text-gray-500 hover:text-gray-700" %>
+              <%= button_to "Archive", channel_path(channel), method: :delete, class: "text-xs text-red-500 hover:text-red-700", data: { turbo_confirm: "Archive this channel?" } %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>

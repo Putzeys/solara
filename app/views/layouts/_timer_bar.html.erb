@@ -1,0 +1,17 @@
+<% active_timer = current_user.timer_sessions.active.first if user_signed_in? %>
+<% if active_timer %>
+  <div class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-2.5 flex items-center justify-between shrink-0 shadow-lg"
+       data-controller="timer" data-timer-started-at-value="<%= active_timer.started_at.iso8601 %>">
+    <div class="flex items-center gap-3 min-w-0">
+      <span class="w-2 h-2 rounded-full bg-white" style="animation: pulse-dot 1.5s ease-in-out infinite"></span>
+      <span class="font-medium text-sm truncate"><%= active_timer.task.title %></span>
+    </div>
+    <div class="flex items-center gap-3 shrink-0">
+      <span class="font-mono text-sm tabular-nums opacity-90" data-timer-target="display">00:00:00</span>
+      <%= button_to timer_stop_path, method: :post,
+          class: "px-3 py-1 text-xs font-semibold bg-white/20 hover:bg-white/30 rounded-lg transition-colors backdrop-blur-sm" do %>
+        Stop
+      <% end %>
+    </div>
+  </div>
+<% end %>
