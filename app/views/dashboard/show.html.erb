@@ -11,15 +11,12 @@
 
     <!-- Quick add -->
     <div class="bg-white rounded-xl border border-gray-200/60 shadow-sm px-4 py-3 mb-3">
-      <turbo-frame id="quick_add">
-        <%= render "tasks/quick_add" %>
-      </turbo-frame>
+      <%= render "tasks/quick_add" %>
     </div>
 
     <!-- Task list -->
-    <turbo-frame id="task_list">
-      <div class="bg-white rounded-xl border border-gray-200/60 shadow-sm divide-y divide-gray-100 overflow-hidden"
-           data-controller="sortable" data-sortable-url-value="<%= reorder_tasks_path %>">
+    <div id="tasks_container" class="bg-white rounded-xl border border-gray-200/60 shadow-sm divide-y divide-gray-100 overflow-hidden"
+         data-controller="sortable" data-sortable-url-value="<%= reorder_tasks_path %>">
         <% @tasks.each do |task| %>
           <%= render "tasks/task", task: task %>
         <% end %>
@@ -34,7 +31,7 @@
           </div>
         <% end %>
       </div>
-    </turbo-frame>
+    </div>
 
     <!-- Backlog preview -->
     <% if @backlog_tasks.any? %>

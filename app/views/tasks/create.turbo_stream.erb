@@ -1,7 +1,3 @@
-<%= turbo_stream.append "task_list > div" do %>
+<%= turbo_stream.append "tasks_container" do %>
   <%= render "tasks/task", task: @task %>
-<% end %>
-
-<%= turbo_stream.replace "quick_add" do %>
-  <%= render "tasks/quick_add" %>
 <% end %>
