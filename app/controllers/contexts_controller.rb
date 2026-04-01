@@ -1,5 +1,5 @@
 class ContextsController < ApplicationController
-  before_action :set_context, only: [:edit, :update, :destroy]
+  before_action :set_context, only: [ :edit, :update, :destroy ]
 
   def index
     @contexts = current_user.contexts.active.ordered.includes(:channels)

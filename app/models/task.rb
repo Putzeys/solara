@@ -13,7 +13,7 @@ class Task < ApplicationRecord
 
   has_rich_text :notes
 
-  acts_as_list scope: [:user_id, :scheduled_date]
+  acts_as_list scope: [ :user_id, :scheduled_date ]
 
   validates :title, presence: true
   validates :status, inclusion: { in: %w[todo in_progress done cancelled] }

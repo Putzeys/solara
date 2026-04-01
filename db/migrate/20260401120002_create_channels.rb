@@ -12,7 +12,7 @@ class CreateChannels < ActiveRecord::Migration[8.0]
       t.timestamps
     end
 
-    add_index :channels, [:user_id, :context_id, :position]
-    add_index :channels, [:user_id, :archived]
+    add_index :channels, [ :user_id, :context_id, :position ]
+    add_index :channels, [ :user_id, :archived ]
   end
 end

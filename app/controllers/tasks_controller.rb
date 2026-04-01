@@ -1,5 +1,5 @@
 class TasksController < ApplicationController
-  before_action :set_task, only: [:show, :edit, :update, :destroy, :complete, :reopen, :schedule, :unschedule]
+  before_action :set_task, only: [ :show, :edit, :update, :destroy, :complete, :reopen, :schedule, :unschedule ]
 
   def index
     @tasks = current_user.tasks.top_level.ordered.includes(:channel)

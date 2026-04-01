@@ -20,7 +20,7 @@ class CreateCalendarEvents < ActiveRecord::Migration[8.0]
       t.timestamps
     end
 
-    add_index :calendar_events, [:user_id, :starts_at, :ends_at]
-    add_index :calendar_events, [:google_event_id, :google_calendar_id], unique: true, name: "idx_cal_events_google_unique"
+    add_index :calendar_events, [ :user_id, :starts_at, :ends_at ]
+    add_index :calendar_events, [ :google_event_id, :google_calendar_id ], unique: true, name: "idx_cal_events_google_unique"
   end
 end

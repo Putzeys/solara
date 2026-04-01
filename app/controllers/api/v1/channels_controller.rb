@@ -7,7 +7,7 @@ module Api
 
       def show
         channel = current_user.channels.find(params[:id])
-        render json: { data: channel.as_json(methods: [], include: { tasks: { only: [:id, :title, :status, :scheduled_date] } }) }
+        render json: { data: channel.as_json(methods: [], include: { tasks: { only: [ :id, :title, :status, :scheduled_date ] } }) }
       end
 
       def create

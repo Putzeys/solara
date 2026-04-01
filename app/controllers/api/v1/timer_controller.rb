@@ -9,7 +9,7 @@ module Api
           started_at: Time.current,
           timer_type: %w[stopwatch pomodoro].include?(params[:timer_type]) ? params[:timer_type] : "stopwatch"
         )
-        render json: { data: timer.as_json(include: { task: { only: [:id, :title] } }) }, status: :created
+        render json: { data: timer.as_json(include: { task: { only: [ :id, :title ] } }) }, status: :created
       end
 
       def stop
@@ -25,7 +25,7 @@ module Api
       def current
         timer = current_user.timer_sessions.active.first
         if timer
-          render json: { data: timer.as_json(methods: :elapsed_seconds, include: { task: { only: [:id, :title] } }) }
+          render json: { data: timer.as_json(methods: :elapsed_seconds, include: { task: { only: [ :id, :title ] } }) }
         else
           render json: { data: nil }
         end

@@ -10,6 +10,6 @@ class CreateWeeklyObjectives < ActiveRecord::Migration[8.0]
       t.timestamps
     end
 
-    add_index :weekly_objectives, [:user_id, :week_start_date]
+    add_index :weekly_objectives, [ :user_id, :week_start_date ]
   end
 end

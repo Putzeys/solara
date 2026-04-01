@@ -15,6 +15,6 @@ class CreateDailyPlans < ActiveRecord::Migration[8.0]
       t.timestamps
     end
 
-    add_index :daily_plans, [:user_id, :plan_date], unique: true
+    add_index :daily_plans, [ :user_id, :plan_date ], unique: true
   end
 end

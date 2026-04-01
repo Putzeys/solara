@@ -4,7 +4,7 @@ class WeeklyObjective < ApplicationRecord
 
   has_rich_text :notes
 
-  acts_as_list scope: [:user_id, :week_start_date]
+  acts_as_list scope: [ :user_id, :week_start_date ]
 
   validates :title, presence: true
   validates :week_start_date, presence: true

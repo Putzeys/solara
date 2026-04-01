@@ -4,7 +4,7 @@ module Api
       def index
         sessions = current_user.working_sessions.ordered.includes(:task)
         sessions = sessions.for_date(Date.parse(params[:date])) if params[:date].present?
-        render json: { data: sessions.as_json(include: { task: { only: [:id, :title] } }) }
+        render json: { data: sessions.as_json(include: { task: { only: [ :id, :title ] } }) }
       end
 
       def create

@@ -14,6 +14,6 @@ class CreateCalendarIntegrations < ActiveRecord::Migration[8.0]
       t.timestamps
     end
 
-    add_index :calendar_integrations, [:user_id, :provider], unique: true
+    add_index :calendar_integrations, [ :user_id, :provider ], unique: true
   end
 end

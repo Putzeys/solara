@@ -4,7 +4,7 @@ class Channel < ApplicationRecord
   has_many :tasks, dependent: :nullify
   has_many :documents, as: :documentable, dependent: :destroy
 
-  acts_as_list scope: [:user_id, :context_id]
+  acts_as_list scope: [ :user_id, :context_id ]
 
   validates :name, presence: true, uniqueness: { scope: :user_id }
 

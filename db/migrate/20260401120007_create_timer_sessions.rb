@@ -11,6 +11,6 @@ class CreateTimerSessions < ActiveRecord::Migration[8.0]
       t.timestamps
     end
 
-    add_index :timer_sessions, [:user_id, :started_at]
+    add_index :timer_sessions, [ :user_id, :started_at ]
   end
 end

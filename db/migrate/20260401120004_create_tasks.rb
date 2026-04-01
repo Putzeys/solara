@@ -28,12 +28,12 @@ class CreateTasks < ActiveRecord::Migration[8.0]
     add_foreign_key :tasks, :tasks, column: :parent_task_id
     add_foreign_key :tasks, :tasks, column: :recurrence_parent_id
 
-    add_index :tasks, [:user_id, :scheduled_date, :position]
-    add_index :tasks, [:user_id, :status]
-    add_index :tasks, [:user_id, :channel_id]
+    add_index :tasks, [ :user_id, :scheduled_date, :position ]
+    add_index :tasks, [ :user_id, :status ]
+    add_index :tasks, [ :user_id, :channel_id ]
     add_index :tasks, :parent_task_id
     add_index :tasks, :recurrence_parent_id
     # Partial index for backlog queries
-    add_index :tasks, [:user_id], where: "scheduled_date IS NULL", name: "index_tasks_on_user_id_backlog"
+    add_index :tasks, [ :user_id ], where: "scheduled_date IS NULL", name: "index_tasks_on_user_id_backlog"
   end
 end

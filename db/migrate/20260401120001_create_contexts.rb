@@ -11,7 +11,7 @@ class CreateContexts < ActiveRecord::Migration[8.0]
       t.timestamps
     end
 
-    add_index :contexts, [:user_id, :position]
-    add_index :contexts, [:user_id, :archived]
+    add_index :contexts, [ :user_id, :position ]
+    add_index :contexts, [ :user_id, :archived ]
   end
 end

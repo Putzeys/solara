@@ -42,7 +42,7 @@ today = Date.current
   { title: "Review pull requests", channel: channels["#engineering"], planned_minutes: 30, priority: 2 },
   { title: "Weekly team sync", channel: channels["#meetings"], planned_minutes: 60, priority: 1 },
   { title: "Plan sprint backlog", channel: channels["#product"], planned_minutes: 45, priority: 2 },
-  { title: "Exercise", channel: channels["#health"], planned_minutes: 45, priority: 1 },
+  { title: "Exercise", channel: channels["#health"], planned_minutes: 45, priority: 1 }
 ].each_with_index do |data, i|
   user.tasks.find_or_create_by!(title: data[:title], scheduled_date: today) do |t|
     t.channel = data[:channel]
@@ -57,7 +57,7 @@ end
   { title: "Research new monitoring tools", channel: channels["#engineering"] },
   { title: "Write blog post about architecture", channel: channels["#engineering"] },
   { title: "Set up budget tracker", channel: channels["#finance"] },
-  { title: "Read 'Designing Data-Intensive Applications'", channel: channels["#learning"] },
+  { title: "Read 'Designing Data-Intensive Applications'", channel: channels["#learning"] }
 ].each_with_index do |data, i|
   user.tasks.find_or_create_by!(title: data[:title], scheduled_date: nil) do |t|
     t.channel = data[:channel]

@@ -1,7 +1,7 @@
 module Api
   module V1
     class TasksController < BaseController
-      before_action :set_task, only: [:show, :update, :destroy, :complete, :reopen, :schedule, :unschedule]
+      before_action :set_task, only: [ :show, :update, :destroy, :complete, :reopen, :schedule, :unschedule ]
 
       def index
         tasks = current_user.tasks.top_level.ordered.includes(:channel)
@@ -22,7 +22,7 @@ module Api
       end
 
       def show
-        render json: { data: @task.as_json(include: [:channel, :subtasks]) }
+        render json: { data: @task.as_json(include: [ :channel, :subtasks ]) }
       end
 
       def create

@@ -1,5 +1,5 @@
 class WeeklyObjectivesController < ApplicationController
-  before_action :set_objective, only: [:edit, :update, :destroy]
+  before_action :set_objective, only: [ :edit, :update, :destroy ]
 
   def index
     @date = current_date

@@ -19,14 +19,14 @@ Rails.application.routes.draw do
     end
   end
 
-  resource :backlog, only: [:show]
+  resource :backlog, only: [ :show ]
 
   resources :channels
-  resources :contexts, except: [:show]
-  resources :weekly_objectives, except: [:show]
+  resources :contexts, except: [ :show ]
+  resources :weekly_objectives, except: [ :show ]
 
-  resources :working_sessions, only: [:create, :update, :destroy]
-  resources :documents, only: [:index, :show, :create, :destroy]
+  resources :working_sessions, only: [ :create, :update, :destroy ]
+  resources :documents, only: [ :index, :show, :create, :destroy ]
 
   # Timer
   post   "timer/start",   to: "timer_sessions#start",   as: :timer_start
@@ -47,7 +47,7 @@ Rails.application.routes.draw do
   post   "auth/google_calendar/sync",     to: "google_calendar#sync"
 
   # Settings
-  resource :settings, only: [:show, :update]
+  resource :settings, only: [ :show, :update ]
 
   # API
   namespace :api do
@@ -64,11 +64,11 @@ Rails.application.routes.draw do
           get :backlog
         end
       end
-      resources :channels, only: [:index, :show, :create, :update, :destroy]
-      resources :contexts, only: [:index, :create, :update, :destroy]
-      resources :weekly_objectives, only: [:index, :create, :update, :destroy]
-      resources :calendar_events, only: [:index]
-      resources :working_sessions, only: [:index, :create, :update, :destroy]
+      resources :channels, only: [ :index, :show, :create, :update, :destroy ]
+      resources :contexts, only: [ :index, :create, :update, :destroy ]
+      resources :weekly_objectives, only: [ :index, :create, :update, :destroy ]
+      resources :calendar_events, only: [ :index ]
+      resources :working_sessions, only: [ :index, :create, :update, :destroy ]
 
       resource :timer, only: [], controller: "timer" do
         post :start

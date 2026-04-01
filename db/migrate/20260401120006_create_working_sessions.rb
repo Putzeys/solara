@@ -10,6 +10,6 @@ class CreateWorkingSessions < ActiveRecord::Migration[8.0]
       t.timestamps
     end
 
-    add_index :working_sessions, [:user_id, :starts_at, :ends_at]
+    add_index :working_sessions, [ :user_id, :starts_at, :ends_at ]
   end
 end
