@@ -1,3 +1,4 @@
+<%= turbo_stream.remove "empty_tasks_state" %>
 <%= turbo_stream.append "tasks_container" do %>
   <%= render "tasks/task", task: @task %>
 <% end %>
