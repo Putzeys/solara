@@ -36,7 +36,7 @@ class TasksController < ApplicationController
     if @task.update(task_params)
       respond_to do |format|
         format.turbo_stream
-        format.html { redirect_back fallback_location: root_path }
+        format.html { redirect_to @task }
       end
     else
       @channels = current_user.channels.active.ordered
@@ -45,10 +45,10 @@ class TasksController < ApplicationController
   end
 
   def destroy
-    @task.destroy
+    @task.discard!
     respond_to do |format|
-      format.turbo_stream
-      format.html { redirect_back fallback_location: root_path }
+      format.turbo_stream { redirect_to root_path, notice: "Task archived." }
+      format.html { redirect_to root_path, notice: "Task archived." }
     end
   end
 

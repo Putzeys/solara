@@ -1,3 +1,8 @@
-<%= turbo_stream.replace @task do %>
+<%= turbo_stream.replace dom_id(@task) do %>
   <%= render "tasks/task", task: @task %>
+<% end %>
+<%= turbo_stream.replace "task_show_#{@task.id}" do %>
+  <div id="task_show_<%= @task.id %>" class="max-w-2xl mx-auto">
+    <%= render "tasks/show_detail", task: @task, subtasks: @task.subtasks.ordered %>
+  </div>
 <% end %>

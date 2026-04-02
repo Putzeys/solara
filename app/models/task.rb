@@ -19,12 +19,16 @@ class Task < ApplicationRecord
   validates :status, inclusion: { in: %w[todo in_progress done cancelled] }
   validates :priority, inclusion: { in: 0..3 }
 
+  # Soft delete: all queries exclude discarded tasks by default
+  default_scope { where(discarded_at: nil) }
+
   scope :for_date, ->(date) { where(scheduled_date: date) }
   scope :backlog, -> { where(scheduled_date: nil) }
   scope :not_done, -> { where.not(status: %w[done cancelled]) }
   scope :done, -> { where(status: "done") }
   scope :ordered, -> { order(:position) }
   scope :top_level, -> { where(parent_task_id: nil) }
+  scope :with_discarded, -> { unscope(where: :discarded_at) }
 
   def complete!
     update!(status: "done", completed_at: Time.current)
@@ -32,6 +36,18 @@ class Task < ApplicationRecord
 
   def reopen!
     update!(status: "todo", completed_at: nil)
+  end
+
+  def discard!
+    update!(discarded_at: Time.current)
+  end
+
+  def undiscard!
+    update!(discarded_at: nil)
+  end
+
+  def discarded?
+    discarded_at.present?
   end
 
   def done?

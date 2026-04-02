@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_04_01_180722) do
+ActiveRecord::Schema[8.0].define(version: 2026_04_02_123559) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -173,6 +173,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_01_180722) do
     t.string "external_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "discarded_at"
     t.index ["channel_id"], name: "index_tasks_on_channel_id"
     t.index ["parent_task_id"], name: "index_tasks_on_parent_task_id"
     t.index ["recurrence_parent_id"], name: "index_tasks_on_recurrence_parent_id"
