@@ -1,1 +1,4 @@
 <%= turbo_stream.remove @task %>
+<%= turbo_stream.append "tasks_container" do %>
+  <%= render "tasks/task", task: @task.reload %>
+<% end %>
