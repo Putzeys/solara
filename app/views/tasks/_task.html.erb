@@ -19,7 +19,7 @@
     <div class="flex-1 min-w-0">
       <%= link_to task.title, task_path(task),
           class: "text-sm font-medium transition-colors duration-150 #{task.done? ? 'line-through text-gray-400' : 'text-gray-700 hover:text-indigo-600'}",
-          data: { task_inline_edit_target: "display" } %>
+          data: { turbo_frame: "_top", task_inline_edit_target: "display" } %>
     </div>
 
     <!-- Meta badges -->
