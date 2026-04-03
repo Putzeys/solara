@@ -1,4 +1,16 @@
-<%= turbo_stream.remove "empty_tasks_state" %>
-<%= turbo_stream.append "tasks_container" do %>
-  <%= render "tasks/task", task: @task %>
+<% if @task.subtask? %>
+  <%# Subtask: append inside parent's subtask container %>
+  <%= turbo_stream.append "subtasks_#{@task.parent_task_id}" do %>
+    <%= render "tasks/task", task: @task %>
+  <% end %>
+  <%# Update parent to show subtask count %>
+  <%= turbo_stream.replace dom_id(@task.parent_task) do %>
+    <%= render "tasks/task", task: @task.parent_task.reload %>
+  <% end %>
+<% else %>
+  <%# Top-level task: append to main list %>
+  <%= turbo_stream.remove "empty_tasks_state" %>
+  <%= turbo_stream.append "tasks_container" do %>
+    <%= render "tasks/task", task: @task %>
+  <% end %>
 <% end %>

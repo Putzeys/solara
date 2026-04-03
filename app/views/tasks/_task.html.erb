@@ -1,7 +1,7 @@
 <turbo-frame id="<%= dom_id(task) %>">
   <div class="flex items-center gap-2.5 group px-4 py-3 transition-colors duration-150 hover:bg-gray-50/80 <%= 'opacity-60' if task.done? %>"
        data-task-id="<%= task.id %>"
-       data-controller="task-inline-edit">
+       data-controller="subtask-add">
     <!-- Checkbox -->
     <% if task.done? %>
       <%= button_to reopen_task_path(task), method: :post, class: "shrink-0 transition-transform hover:scale-110", form: { data: { turbo_frame: "_top" } } do %>
@@ -19,7 +19,7 @@
     <div class="flex-1 min-w-0">
       <%= link_to task.title, task_path(task),
           class: "text-sm font-medium transition-colors duration-150 #{task.done? ? 'line-through text-gray-400' : 'text-gray-700 hover:text-indigo-600'}",
-          data: { turbo_frame: "_top", task_inline_edit_target: "display" } %>
+          data: { turbo_frame: "_top" } %>
     </div>
 
     <!-- Meta badges -->
@@ -46,10 +46,28 @@
           <%= task.rollover_count %>d
         </span>
       <% end %>
+
+      <!-- Subtask count -->
+      <% if !task.subtask? && task.subtasks.any? %>
+        <span class="text-[11px] text-gray-400 font-medium tabular-nums" title="<%= task.subtasks.done.count %>/<%= task.subtasks.count %> subtasks done">
+          <svg class="w-3 h-3 inline -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="1.5" d="M4 6h16M4 12h16M4 18h7"/></svg>
+          <%= task.subtasks.done.count %>/<%= task.subtasks.count %>
+        </span>
+      <% end %>
     </div>
 
     <!-- Actions (visible on hover) -->
     <div class="hidden group-hover:flex items-center gap-0.5 shrink-0">
+      <!-- Add subtask button (only for top-level tasks) -->
+      <% unless task.subtask? || task.done? %>
+        <button type="button"
+                class="p-1.5 rounded-lg hover:bg-indigo-50 transition-colors"
+                title="Add subtask"
+                data-action="click->subtask-add#toggle">
+          <svg class="w-3.5 h-3.5 text-gray-400 hover:text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="1.5" d="M12 4v16m8-8H4"/></svg>
+        </button>
+      <% end %>
+
       <% unless task.done? %>
         <% if task.backlog? %>
           <%= button_to schedule_task_path(task, date: Date.current), method: :post,
@@ -75,12 +93,29 @@
     </div>
   </div>
 
-  <!-- Subtasks -->
-  <% if task.subtasks.any? %>
-    <div class="ml-11 border-l-2 border-gray-100">
-      <% task.subtasks.ordered.each do |subtask| %>
-        <%= render "tasks/task", task: subtask %>
+  <!-- Inline subtask add form (hidden by default) -->
+  <% unless task.subtask? %>
+    <div class="hidden ml-11 border-l-2 border-indigo-200 px-4 py-2 bg-indigo-50/30" data-subtask-add-target="form">
+      <%= form_with model: Task.new, url: tasks_path, class: "flex items-center gap-2", data: { action: "turbo:submit-end->subtask-add#afterSubmit" } do |f| %>
+        <%= f.hidden_field :parent_task_id, value: task.id %>
+        <%= f.hidden_field :scheduled_date, value: task.scheduled_date %>
+        <%= f.hidden_field :channel_id, value: task.channel_id %>
+        <div class="w-4 h-4 rounded-full border-2 border-dashed border-gray-300 shrink-0"></div>
+        <%= f.text_field :title,
+            placeholder: "Add subtask...",
+            class: "flex-1 text-xs border-0 focus:ring-0 py-0 px-0 placeholder-gray-400 text-gray-700 bg-transparent",
+            data: { subtask_add_target: "input" },
+            autocomplete: "off" %>
+        <%= f.submit "Add", class: "text-[10px] font-semibold text-indigo-500 hover:text-indigo-700 cursor-pointer uppercase tracking-wide" %>
+        <button type="button" class="text-[10px] text-gray-400 hover:text-gray-600" data-action="click->subtask-add#toggle">Cancel</button>
       <% end %>
     </div>
   <% end %>
+
+  <!-- Subtasks -->
+  <div id="subtasks_<%= task.id %>" class="<%= 'ml-11 border-l-2 border-gray-100' if task.subtasks.any? %>">
+    <% task.subtasks.ordered.each do |subtask| %>
+      <%= render "tasks/task", task: subtask %>
+    <% end %>
+  </div>
 </turbo-frame>
