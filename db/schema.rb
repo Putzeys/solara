@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_04_02_123559) do
+ActiveRecord::Schema[8.0].define(version: 2026_04_03_032544) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -135,6 +135,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_02_123559) do
     t.integer "tasks_rolled_over", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.jsonb "completed_snapshot", default: []
+    t.jsonb "rolled_snapshot", default: []
     t.index ["user_id", "plan_date"], name: "index_daily_plans_on_user_id_and_plan_date", unique: true
     t.index ["user_id"], name: "index_daily_plans_on_user_id"
   end
@@ -174,6 +176,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_02_123559) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "discarded_at"
+    t.integer "rollover_count", default: 0, null: false
     t.index ["channel_id"], name: "index_tasks_on_channel_id"
     t.index ["parent_task_id"], name: "index_tasks_on_parent_task_id"
     t.index ["recurrence_parent_id"], name: "index_tasks_on_recurrence_parent_id"

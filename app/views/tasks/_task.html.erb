@@ -40,6 +40,12 @@
           <%= task.priority == 3 ? 'HIGH' : task.priority == 2 ? 'MED' : 'LOW' %>
         </span>
       <% end %>
+
+      <% if task.rollover_count > 0 %>
+        <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-orange-100 text-orange-600" title="Rolling over for <%= task.rollover_count %> consecutive days">
+          <%= task.rollover_count %>d
+        </span>
+      <% end %>
     </div>
 
     <!-- Actions (visible on hover) -->

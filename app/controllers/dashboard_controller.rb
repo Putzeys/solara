@@ -29,8 +29,6 @@ class DashboardController < ApplicationController
 
     @daily_plan = current_user.daily_plans.find_or_initialize_by(plan_date: current_date)
     @weekly_objectives = current_user.weekly_objectives.for_week(current_date).active.ordered
-
-    @rolled_over_count = flash[:rolled_over_count]
   end
 
   private
@@ -38,15 +36,21 @@ class DashboardController < ApplicationController
   def auto_rollover
     return unless current_date == Date.current
 
-    rolled = current_user.tasks
+    overdue_tasks = current_user.tasks
       .not_done
       .top_level
       .where("scheduled_date < ?", Date.current)
-      .update_all(scheduled_date: Date.current, source: "rollover")
 
-    if rolled > 0
-      flash.now[:notice] = "#{rolled} #{"task".pluralize(rolled)} rolled over from previous days."
-      flash[:rolled_over_count] = rolled
+    return if overdue_tasks.empty?
+
+    overdue_tasks.each do |task|
+      task.increment!(:rollover_count)
+    end
+
+    rolled_count = overdue_tasks.update_all(scheduled_date: Date.current, source: "rollover")
+
+    if rolled_count > 0
+      flash.now[:notice] = "#{rolled_count} #{"task".pluralize(rolled_count)} rolled over from previous days."
     end
   end
 end
