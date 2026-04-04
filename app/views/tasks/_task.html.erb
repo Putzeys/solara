@@ -1,7 +1,6 @@
-<turbo-frame id="<%= dom_id(task) %>">
+<turbo-frame id="<%= dom_id(task) %>" data-controller="subtask-add">
   <div class="flex items-center gap-2.5 group px-4 py-3 transition-colors duration-150 hover:bg-gray-50/80 <%= 'opacity-60' if task.done? %>"
-       data-task-id="<%= task.id %>"
-       data-controller="subtask-add">
+       data-task-id="<%= task.id %>">
     <!-- Checkbox -->
     <% if task.done? %>
       <%= button_to reopen_task_path(task), method: :post, class: "shrink-0 transition-transform hover:scale-110", form: { data: { turbo_frame: "_top" } } do %>
