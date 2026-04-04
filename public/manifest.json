@@ -2,20 +2,21 @@
   "name": "Solara",
   "short_name": "Solara",
   "description": "Self-hosted daily planner — plan, focus, reflect.",
-  "start_url": "/",
+  "start_url": "/solara/",
+  "scope": "/solara/",
   "display": "standalone",
   "background_color": "#f9fafb",
   "theme_color": "#4f46e5",
   "orientation": "any",
   "icons": [
     {
-      "src": "/icons/icon-192.png",
+      "src": "/solara/icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/icons/icon-512.png",
+      "src": "/solara/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"

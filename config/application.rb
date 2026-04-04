@@ -38,5 +38,8 @@ module Solara
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+
+    # Support subpath deployment (e.g. /solara) via RAILS_RELATIVE_URL_ROOT
+    config.relative_url_root = ENV.fetch("RAILS_RELATIVE_URL_ROOT", "/")
   end
 end
