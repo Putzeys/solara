@@ -9,8 +9,9 @@ export default class extends Controller {
     const now = new Date()
     const currentHour = now.getHours()
     const hourElement = this.element.querySelector(`[data-hour="${currentHour}"]`)
-    if (hourElement) {
-      hourElement.scrollIntoView({ behavior: "smooth", block: "center" })
+    const scrollContainer = this.element.querySelector(".overflow-y-auto")
+    if (hourElement && scrollContainer) {
+      scrollContainer.scrollTop = hourElement.offsetTop - scrollContainer.offsetHeight / 2
     }
   }
 }
