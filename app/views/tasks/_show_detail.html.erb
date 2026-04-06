@@ -38,6 +38,12 @@
           <% if task.done? %>
             <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-600">DONE</span>
           <% end %>
+          <% if task.weekly_objective %>
+            <%= link_to weekly_objectives_path, class: "inline-flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition-colors" do %>
+              <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+              <%= task.weekly_objective.title %>
+            <% end %>
+          <% end %>
         </div>
       </div>
     </div>

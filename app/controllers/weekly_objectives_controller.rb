@@ -3,7 +3,7 @@ class WeeklyObjectivesController < ApplicationController
 
   def index
     @date = current_date
-    @objectives = current_user.weekly_objectives.for_week(@date).ordered
+    @objectives = current_user.weekly_objectives.for_week(@date).ordered.includes(tasks: :channel)
   end
 
   def new

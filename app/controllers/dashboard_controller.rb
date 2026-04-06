@@ -6,7 +6,7 @@ class DashboardController < ApplicationController
       .for_date(current_date)
       .top_level
       .ordered
-      .includes(:channel, :subtasks)
+      .includes(:channel, :subtasks, :weekly_objective)
 
     @backlog_tasks = current_user.tasks
       .backlog

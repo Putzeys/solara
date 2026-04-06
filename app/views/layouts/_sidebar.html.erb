@@ -96,14 +96,27 @@
         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M12 4v16m8-8H4"/></svg>
       <% end %>
     </div>
-    <% objectives = current_user.weekly_objectives.for_week(Date.current).active.ordered %>
+    <% objectives = current_user.weekly_objectives.for_week(Date.current).active.ordered.includes(:tasks) %>
     <% if objectives.any? %>
-      <div class="space-y-0.5">
+      <div class="space-y-1">
         <% objectives.each do |obj| %>
+          <% tasks = obj.tasks.where(discarded_at: nil) %>
+          <% done = tasks.select(&:done?).size %>
+          <% total = tasks.size %>
           <%= link_to edit_weekly_objective_path(obj),
-              class: "flex items-center gap-2.5 px-3 py-1.5 text-sm rounded-lg transition-all duration-150 hover:bg-white/5 hover:text-white group" do %>
-            <div class="w-1.5 h-1.5 rounded-full bg-indigo-400 group-hover:bg-indigo-300"></div>
-            <span class="truncate"><%= obj.title %></span>
+              class: "block px-3 py-1.5 rounded-lg transition-all duration-150 hover:bg-white/5 group" do %>
+            <div class="flex items-center gap-2">
+              <div class="w-1.5 h-1.5 rounded-full bg-indigo-400 group-hover:bg-indigo-300 shrink-0"></div>
+              <span class="text-sm truncate group-hover:text-white"><%= obj.title %></span>
+              <% if total > 0 %>
+                <span class="text-[10px] text-gray-500 ml-auto shrink-0"><%= done %>/<%= total %></span>
+              <% end %>
+            </div>
+            <% if total > 0 %>
+              <div class="mt-1 ml-3.5 h-0.5 bg-white/5 rounded-full overflow-hidden">
+                <div class="h-full rounded-full bg-indigo-400/60" style="width: <%= total > 0 ? (done.to_f / total * 100).round : 0 %>%"></div>
+              </div>
+            <% end %>
           <% end %>
         <% end %>
       </div>
