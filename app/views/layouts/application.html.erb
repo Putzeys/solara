@@ -7,8 +7,9 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Solara">
     <meta name="theme-color" content="#4f46e5">
-    <link rel="manifest" href="/manifest.json">
-    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+    <% base_path = Rails.application.config.relative_url_root.to_s.chomp("/") %>
+    <link rel="manifest" href="<%= "#{base_path}/manifest.json" %>">
+    <link rel="apple-touch-icon" href="<%= "#{base_path}/icons/icon-192.png" %>">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,7 +19,9 @@
     <%= javascript_importmap_tags %>
     <script>
       if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.register("/service-worker.js");
+        navigator.serviceWorker.register("<%= base_path %>/service-worker.js", {
+          scope: "<%= base_path %>/"
+        });
       }
     </script>
   </head>
