@@ -21,7 +21,7 @@ module GoogleCalendar
         redirect_uri: redirect_uri,
         scope: SCOPES.join(" "),
         access_type: "offline",
-        prompt: "consent"
+        additional_parameters: { prompt: "consent" }
       )
       client.authorization_uri.to_s
     end

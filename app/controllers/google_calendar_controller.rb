@@ -16,12 +16,19 @@ class GoogleCalendarController < ApplicationController
     )
 
     integration = current_user.calendar_integrations.find_or_initialize_by(provider: "google")
-    integration.update!(
+    attrs = {
       access_token: client.access_token,
-      refresh_token: client.refresh_token,
       token_expires_at: Time.current + client.expires_in.to_i.seconds,
       active: true
-    )
+    }
+    attrs[:refresh_token] = client.refresh_token if client.refresh_token.present?
+
+    if integration.new_record? && attrs[:refresh_token].blank?
+      redirect_to settings_path, alert: "Google did not return a refresh token. Please revoke access at https://myaccount.google.com/permissions and try again."
+      return
+    end
+
+    integration.update!(attrs)
 
     # Fetch available calendars and store their IDs
     gcal = GoogleCalendar::Client.new(integration)
