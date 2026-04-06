@@ -5,7 +5,8 @@ class CalendarIntegration < ApplicationRecord
   encrypts :access_token
   encrypts :refresh_token
 
-  validates :provider, presence: true, uniqueness: { scope: :user_id }
+  validates :provider, presence: true
+  validates :google_email, uniqueness: { scope: [ :user_id, :provider ] }, allow_nil: true
 
   scope :active, -> { where(active: true) }
 

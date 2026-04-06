@@ -15,7 +15,13 @@ class GoogleCalendarController < ApplicationController
       redirect_uri: callback_url
     )
 
-    integration = current_user.calendar_integrations.find_or_initialize_by(provider: "google")
+    google_email = GoogleCalendar::Client.fetch_user_email(client.access_token)
+
+    integration = current_user.calendar_integrations.find_or_initialize_by(
+      provider: "google",
+      google_email: google_email
+    )
+
     attrs = {
       access_token: client.access_token,
       token_expires_at: Time.current + client.expires_in.to_i.seconds,
@@ -35,29 +41,24 @@ class GoogleCalendarController < ApplicationController
     calendars = gcal.list_calendars
     integration.update!(calendar_ids: calendars.map { |c| c[:id] })
 
-    redirect_to settings_path, notice: "Google Calendar connected! #{calendars.size} calendars synced."
+    redirect_to settings_path, notice: "#{google_email} connected! #{calendars.size} calendars synced."
   rescue => e
     redirect_to settings_path, alert: "Failed to connect: #{e.message}"
   end
 
   def disconnect
-    current_user.calendar_integrations.where(provider: "google").destroy_all
-    current_user.calendar_events.destroy_all
-    redirect_to settings_path, notice: "Google Calendar disconnected."
+    integration = current_user.calendar_integrations.find(params[:id])
+    integration.calendar_events.destroy_all
+    integration.destroy!
+    redirect_to settings_path, notice: "#{integration.google_email} disconnected."
   end
 
   def sync
-    integration = current_user.calendar_integrations.find_by(provider: "google", active: true)
-    unless integration
-      redirect_to settings_path, alert: "No Google Calendar connected."
-      return
-    end
-
+    integration = current_user.calendar_integrations.find(params[:id])
     gcal = GoogleCalendar::Client.new(integration)
     gcal.sync_events
 
-    event_count = current_user.calendar_events.count
-    redirect_to settings_path, notice: "Sync complete! #{event_count} events loaded."
+    redirect_to settings_path, notice: "#{integration.google_email} synced!"
   rescue => e
     redirect_to settings_path, alert: "Sync failed: #{e.message}"
   end

@@ -41,10 +41,10 @@ Rails.application.routes.draw do
   post "plan/rollover/:date", to: "daily_plans#rollover", as: :rollover
 
   # Google Calendar OAuth
-  get    "auth/google_calendar",          to: "google_calendar#authorize",  as: :auth_google_calendar
-  get    "auth/google_calendar/callback", to: "google_calendar#callback"
-  delete "auth/google_calendar",          to: "google_calendar#disconnect"
-  post   "auth/google_calendar/sync",     to: "google_calendar#sync"
+  get    "auth/google_calendar",              to: "google_calendar#authorize",  as: :auth_google_calendar
+  get    "auth/google_calendar/callback",     to: "google_calendar#callback"
+  delete "auth/google_calendar/:id",          to: "google_calendar#disconnect", as: :disconnect_google_calendar
+  post   "auth/google_calendar/:id/sync",     to: "google_calendar#sync",      as: :sync_google_calendar
 
   # Settings
   resource :settings, only: [ :show, :update ]

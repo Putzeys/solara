@@ -1,6 +1,11 @@
+require "net/http"
+
 module GoogleCalendar
   class Client
-    SCOPES = [ "https://www.googleapis.com/auth/calendar.readonly" ].freeze
+    SCOPES = [
+      "https://www.googleapis.com/auth/calendar.readonly",
+      "https://www.googleapis.com/auth/userinfo.email"
+    ].freeze
 
     def self.configured?
       ENV["GOOGLE_CLIENT_ID"].present? && ENV["GOOGLE_CLIENT_SECRET"].present?
@@ -24,6 +29,14 @@ module GoogleCalendar
         additional_parameters: { prompt: "consent" }
       )
       client.authorization_uri.to_s
+    end
+
+    def self.fetch_user_email(access_token)
+      uri = URI("https://www.googleapis.com/oauth2/v2/userinfo")
+      req = Net::HTTP::Get.new(uri)
+      req["Authorization"] = "Bearer #{access_token}"
+      res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) { |http| http.request(req) }
+      JSON.parse(res.body)["email"]
     end
 
     def self.exchange_code(code:, redirect_uri:)
