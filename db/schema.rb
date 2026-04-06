@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_04_03_032544) do
+ActiveRecord::Schema[8.0].define(version: 2026_04_06_170000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -70,8 +70,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_03_032544) do
     t.jsonb "raw_data"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["calendar_integration_id", "google_event_id", "google_calendar_id"], name: "idx_cal_events_google_unique", unique: true
     t.index ["calendar_integration_id"], name: "index_calendar_events_on_calendar_integration_id"
-    t.index ["google_event_id", "google_calendar_id"], name: "idx_cal_events_google_unique", unique: true
     t.index ["user_id", "starts_at", "ends_at"], name: "index_calendar_events_on_user_id_and_starts_at_and_ends_at"
     t.index ["user_id"], name: "index_calendar_events_on_user_id"
   end
@@ -80,7 +80,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_03_032544) do
     t.bigint "user_id", null: false
     t.string "provider", default: "google", null: false
     t.text "access_token", null: false
-    t.text "refresh_token", null: false
+    t.text "refresh_token"
     t.datetime "token_expires_at"
     t.jsonb "calendar_ids", default: []
     t.string "sync_token"
@@ -88,7 +88,10 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_03_032544) do
     t.boolean "active", default: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["user_id", "provider"], name: "index_calendar_integrations_on_user_id_and_provider", unique: true
+    t.string "google_email"
+    t.jsonb "calendar_metadata", default: {}
+    t.jsonb "hidden_calendar_ids", default: []
+    t.index ["user_id", "provider", "google_email"], name: "idx_on_user_id_provider_google_email_5e499b7fe5", unique: true
     t.index ["user_id"], name: "index_calendar_integrations_on_user_id"
   end
 

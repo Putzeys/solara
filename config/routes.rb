@@ -23,7 +23,12 @@ Rails.application.routes.draw do
 
   resources :channels
   resources :contexts, except: [ :show ]
-  resources :weekly_objectives, except: [ :show ]
+  resources :weekly_objectives do
+    member do
+      post :link_task
+      post :unlink_task
+    end
+  end
 
   resources :working_sessions, only: [ :create, :update, :destroy ]
   resources :documents, only: [ :index, :show, :create, :destroy ]

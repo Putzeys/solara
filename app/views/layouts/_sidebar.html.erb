@@ -91,7 +91,7 @@
   <!-- Weekly Objectives -->
   <div class="px-3 py-3">
     <div class="flex items-center justify-between px-3 mb-1.5">
-      <h3 class="text-[11px] font-semibold text-gray-500 uppercase tracking-widest">This Week</h3>
+      <%= link_to "This Week", weekly_objectives_path, class: "text-[11px] font-semibold text-gray-500 uppercase tracking-widest hover:text-gray-300 transition-colors" %>
       <%= link_to new_weekly_objective_path, class: "p-0.5 rounded text-gray-500 hover:text-indigo-400 hover:bg-white/5 transition-colors", title: "Add goal" do %>
         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M12 4v16m8-8H4"/></svg>
       <% end %>
@@ -103,7 +103,7 @@
           <% tasks = obj.tasks.where(discarded_at: nil) %>
           <% done = tasks.select(&:done?).size %>
           <% total = tasks.size %>
-          <%= link_to edit_weekly_objective_path(obj),
+          <%= link_to weekly_objective_path(obj),
               class: "block px-3 py-1.5 rounded-lg transition-all duration-150 hover:bg-white/5 group" do %>
             <div class="flex items-center gap-2">
               <div class="w-1.5 h-1.5 rounded-full bg-indigo-400 group-hover:bg-indigo-300 shrink-0"></div>
