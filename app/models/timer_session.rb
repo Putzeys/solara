@@ -12,6 +12,12 @@ class TimerSession < ApplicationRecord
     now = Time.current
     update!(ended_at: now, duration_seconds: (now - started_at).to_i)
     task.increment!(:actual_minutes, (duration_seconds / 60.0).ceil)
+
+    user.working_sessions.create!(
+      task: task,
+      starts_at: started_at,
+      ends_at: now
+    )
   end
 
   def running?

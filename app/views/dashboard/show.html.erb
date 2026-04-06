@@ -49,7 +49,11 @@
   </div>
 
   <!-- Calendar Timeline (right panel) -->
-  <div class="w-full lg:w-1/2 min-h-[60vh] lg:min-h-0 bg-white rounded-xl border border-gray-200/60 shadow-sm overflow-hidden flex flex-col" data-controller="calendar-timeline">
+  <div class="w-full lg:w-1/2 min-h-[60vh] lg:min-h-0 bg-white rounded-xl border border-gray-200/60 shadow-sm overflow-hidden flex flex-col"
+       data-controller="calendar-timeline"
+       <% if @active_timer %>
+         data-calendar-timeline-active-timer-value="<%= { task_title: @active_timer.task.title, started_at: @active_timer.started_at.iso8601 }.to_json %>"
+       <% end %>>
     <div class="px-4 py-3 border-b border-gray-100 flex items-center justify-between shrink-0">
       <h2 class="text-xs font-semibold text-gray-400 uppercase tracking-widest">Timeline</h2>
       <span class="text-xs text-gray-400"><%= @calendar_events.count + @working_sessions.count %> events</span>
@@ -74,7 +78,8 @@
               <% hour_sessions.each do |session| %>
                 <div class="text-xs bg-indigo-50 text-indigo-700 rounded-lg px-3 py-2 border-l-[3px] border-indigo-400 shadow-sm">
                   <span class="font-medium"><%= session.task.title %></span>
-                  <span class="text-indigo-400 ml-1.5"><%= session.duration_minutes %>m</span>
+                  <span class="text-indigo-400 ml-1.5"><%= session.starts_at.strftime("%-H:%M") %>&ndash;<%= session.ends_at.strftime("%-H:%M") %></span>
+                  <span class="text-indigo-300 ml-1">(<%= session.duration_minutes %>m)</span>
                 </div>
               <% end %>
             </div>
@@ -82,5 +87,13 @@
         <% end %>
       </div>
     </div>
+
+    <% if @working_sessions.any? %>
+      <div class="px-4 py-2 border-t border-gray-100 shrink-0">
+        <p class="text-[11px] text-gray-400">
+          Total: <%= @working_sessions.sum(&:duration_minutes) %>m worked today
+        </p>
+      </div>
+    <% end %>
   </div>
 </div>

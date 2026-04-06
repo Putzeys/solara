@@ -27,6 +27,8 @@ class DashboardController < ApplicationController
       .for_date(current_date)
       .ordered
 
+    @active_timer = current_user.timer_sessions.active.includes(:task).first
+
     @daily_plan = current_user.daily_plans.find_or_initialize_by(plan_date: current_date)
     @weekly_objectives = current_user.weekly_objectives.for_week(current_date).active.ordered
   end
