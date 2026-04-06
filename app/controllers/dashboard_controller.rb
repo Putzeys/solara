@@ -23,9 +23,21 @@ class DashboardController < ApplicationController
       .ordered
       .includes(:task)
 
+    @integrations = current_user.calendar_integrations.where(provider: "google", active: true)
+    hidden_ids = @integrations.flat_map { |i| i.hidden_calendar_ids || [] }
+
     @calendar_events = current_user.calendar_events
       .for_date(current_date)
+      .where.not(google_calendar_id: hidden_ids)
       .ordered
+
+    # Build calendar_id => {summary, color, integration_id} lookup
+    @calendar_lookup = {}
+    @integrations.each do |integration|
+      (integration.calendar_metadata || {}).each do |cal_id, meta|
+        @calendar_lookup[cal_id] = meta.merge("integration_id" => integration.id, "google_email" => integration.google_email)
+      end
+    end
 
     @active_timer = current_user.timer_sessions.active.includes(:task).first
 

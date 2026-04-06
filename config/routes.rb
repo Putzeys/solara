@@ -43,8 +43,9 @@ Rails.application.routes.draw do
   # Google Calendar OAuth
   get    "auth/google_calendar",              to: "google_calendar#authorize",  as: :auth_google_calendar
   get    "auth/google_calendar/callback",     to: "google_calendar#callback"
-  delete "auth/google_calendar/:id",          to: "google_calendar#disconnect", as: :disconnect_google_calendar
-  post   "auth/google_calendar/:id/sync",     to: "google_calendar#sync",      as: :sync_google_calendar
+  delete "auth/google_calendar/:id",              to: "google_calendar#disconnect",     as: :disconnect_google_calendar
+  post   "auth/google_calendar/:id/sync",         to: "google_calendar#sync",           as: :sync_google_calendar
+  post   "auth/google_calendar/:id/toggle_calendar", to: "google_calendar#toggle_calendar", as: :toggle_calendar
 
   # Settings
   resource :settings, only: [ :show, :update ]

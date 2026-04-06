@@ -36,14 +36,30 @@ class GoogleCalendarController < ApplicationController
 
     integration.update!(attrs)
 
-    # Fetch available calendars and store their IDs
+    # Fetch available calendars and store their IDs + metadata
     gcal = GoogleCalendar::Client.new(integration)
     calendars = gcal.list_calendars
-    integration.update!(calendar_ids: calendars.map { |c| c[:id] })
+    metadata = calendars.each_with_object({}) { |c, h| h[c[:id]] = { summary: c[:summary], color: c[:color], primary: c[:primary] } }
+    integration.update!(calendar_ids: calendars.map { |c| c[:id] }, calendar_metadata: metadata)
 
     redirect_to settings_path, notice: "#{google_email} connected! #{calendars.size} calendars synced."
   rescue => e
     redirect_to settings_path, alert: "Failed to connect: #{e.message}"
+  end
+
+  def toggle_calendar
+    integration = current_user.calendar_integrations.find(params[:id])
+    calendar_id = params[:calendar_id]
+    hidden = (integration.hidden_calendar_ids || []).dup
+
+    if hidden.include?(calendar_id)
+      hidden.delete(calendar_id)
+    else
+      hidden << calendar_id
+    end
+
+    integration.update!(hidden_calendar_ids: hidden)
+    redirect_back fallback_location: root_path
   end
 
   def disconnect
