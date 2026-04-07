@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_04_06_170000) do
+ActiveRecord::Schema[8.0].define(version: 2026_04_07_210957) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -219,6 +219,12 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_06_170000) do
     t.string "api_token"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "llm_endpoint"
+    t.text "llm_api_key"
+    t.string "llm_model"
+    t.string "obsidian_vault_path"
+    t.text "obsidian_prompt_template"
+    t.string "obsidian_response_format", default: "json"
     t.index ["api_token"], name: "index_users_on_api_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true

@@ -15,6 +15,9 @@ class SettingsController < ApplicationController
   private
 
   def settings_params
-    params.require(:user).permit(:timezone, :daily_hour_target, :week_start_day, :pomodoro_work_min, :pomodoro_break_min)
+    params.require(:user).permit(
+      :timezone, :daily_hour_target, :week_start_day, :pomodoro_work_min, :pomodoro_break_min,
+      :llm_endpoint, :llm_api_key, :llm_model, :obsidian_vault_path, :obsidian_prompt_template, :obsidian_response_format
+    )
   end
 end

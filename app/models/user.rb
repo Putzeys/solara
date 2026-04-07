@@ -13,7 +13,13 @@ class User < ApplicationRecord
   has_many :calendar_events, dependent: :destroy
   has_many :documents, dependent: :destroy
 
+  encrypts :llm_api_key
+
   before_create :generate_api_token
+
+  def obsidian_configured?
+    llm_endpoint.present? && llm_model.present? && obsidian_vault_path.present? && Dir.exist?(obsidian_vault_path.to_s)
+  end
 
   private
 

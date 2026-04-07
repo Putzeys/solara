@@ -52,6 +52,12 @@ Rails.application.routes.draw do
   post   "auth/google_calendar/:id/sync",         to: "google_calendar#sync",           as: :sync_google_calendar
   post   "auth/google_calendar/:id/toggle_calendar", to: "google_calendar#toggle_calendar", as: :toggle_calendar
 
+  # Obsidian
+  get  "obsidian",          to: "obsidian#index",   as: :obsidian
+  post "obsidian/capture",  to: "obsidian#capture", as: :obsidian_capture
+  get  "obsidian/search",   to: "obsidian#search",  as: :obsidian_search
+  post "obsidian/test",     to: "obsidian#test_connection", as: :obsidian_test
+
   # Settings
   resource :settings, only: [ :show, :update ]
 
