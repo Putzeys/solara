@@ -1,4 +1,4 @@
-<div class="flex flex-col lg:flex-row gap-4 lg:gap-6 h-[calc(100vh-5rem)]">
+<div class="flex flex-col lg:flex-row gap-4 lg:gap-6 h-auto lg:h-[calc(100vh-5rem)]">
   <!-- Task List (left panel) -->
   <div class="w-full lg:w-1/2 flex flex-col min-w-0 min-h-0">
     <div class="flex items-center justify-between mb-3 shrink-0">
@@ -15,7 +15,7 @@
     </div>
 
     <!-- Task list -->
-    <div id="tasks_container" class="bg-white rounded-xl border border-gray-200/60 shadow-sm divide-y divide-gray-100 overflow-y-auto flex-1 min-h-0"
+    <div id="tasks_container" class="bg-white rounded-xl border border-gray-200/60 shadow-sm divide-y divide-gray-100 lg:overflow-y-auto lg:flex-1 lg:min-h-0"
          data-controller="sortable" data-sortable-url-value="<%= reorder_tasks_path %>">
         <% @tasks.each do |task| %>
           <%= render "tasks/task", task: task %>
@@ -50,7 +50,8 @@
 
   <!-- Calendar Timeline (right panel) -->
   <div class="w-full lg:w-1/2 min-h-[60vh] lg:min-h-0 bg-white rounded-xl border border-gray-200/60 shadow-sm overflow-hidden flex flex-col"
-       data-controller="calendar-timeline event-popup"
+       data-controller="calendar-timeline event-popup block-create"
+       data-block-create-date-value="<%= current_date.iso8601 %>"
        <% if @active_timer %>
          data-calendar-timeline-active-timer-value="<%= { task_title: @active_timer.task.title, started_at: @active_timer.started_at.iso8601 }.to_json %>"
        <% end %>>
@@ -85,7 +86,7 @@
         <% (7..22).each do |hour| %>
           <% hour_events = @calendar_events.select { |e| e.starts_at.hour == hour } %>
           <% hour_sessions = @working_sessions.select { |ws| ws.starts_at.hour == hour } %>
-          <div class="flex items-start border-t border-gray-50 min-h-[3.5rem] group" data-hour="<%= hour %>">
+          <div class="flex items-start border-t border-gray-50 min-h-[3.5rem] group cursor-pointer" data-hour="<%= hour %>" data-action="click->block-create#openAt">
             <span class="w-12 text-[11px] font-medium text-gray-300 py-2 shrink-0 group-hover:text-gray-500 transition-colors">
               <%= "#{hour.to_s.rjust(2, '0')}:00" %>
             </span>
@@ -115,7 +116,7 @@
                 </div>
               <% end %>
               <% hour_sessions.each do |session| %>
-                <div class="text-xs bg-indigo-50 text-indigo-700 rounded-lg px-3 py-2 border-l-[3px] border-indigo-400 shadow-sm">
+                <div data-block class="text-xs bg-indigo-50 text-indigo-700 rounded-lg px-3 py-2 border-l-[3px] border-indigo-400 shadow-sm">
                   <span class="font-medium"><%= session.task.title %></span>
                   <span class="text-indigo-400 ml-1.5"><%= session.starts_at.strftime("%-H:%M") %>&ndash;<%= session.ends_at.strftime("%-H:%M") %></span>
                   <span class="text-indigo-300 ml-1">(<%= session.duration_minutes %>m)</span>
@@ -181,6 +182,28 @@
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="1.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
             Open in Google Calendar
           </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Time block: pick a task -->
+    <div data-block-create-target="modal" class="hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4" data-action="click->block-create#close">
+      <div class="absolute inset-0 bg-black/20"></div>
+      <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-sm p-5 space-y-3" data-action="click->block-create#stop">
+        <div class="flex items-center justify-between">
+          <h3 class="font-semibold text-gray-900 text-sm">Block a task</h3>
+          <span data-block-create-target="label" class="text-xs font-medium text-indigo-500"></span>
+        </div>
+        <div class="space-y-1 max-h-72 overflow-y-auto">
+          <% @tasks.not_done.each do |task| %>
+            <button type="button" data-action="click->block-create#pick" data-task-id="<%= task.id %>"
+                    class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-indigo-50 active:bg-indigo-100 text-sm text-gray-700 transition-colors">
+              <%= task.title %>
+            </button>
+          <% end %>
+          <% if @tasks.not_done.empty? %>
+            <p class="text-xs text-gray-400 text-center py-6">No open tasks for today.</p>
+          <% end %>
         </div>
       </div>
     </div>
