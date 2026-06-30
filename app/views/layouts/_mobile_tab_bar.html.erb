@@ -1,0 +1,38 @@
+<%# iOS-style bottom tab bar. Primary nav on mobile; hidden on lg+ (sidebar takes over). %>
+<nav class="lg:hidden shrink-0 bg-white/85 backdrop-blur-xl border-t border-gray-200/70 pb-[env(safe-area-inset-bottom)]">
+  <div class="flex items-stretch justify-around">
+    <%
+      today_active   = controller_name == "dashboard" && current_date == Date.current
+      backlog_active = controller_name == "backlogs"
+      week_active    = controller_name == "weekly_objectives"
+      settings_active = controller_name == "settings"
+      tab = ->(active) { "flex flex-col items-center justify-center gap-0.5 flex-1 min-h-[52px] pt-2 text-[10px] font-medium transition-colors #{active ? 'text-indigo-600' : 'text-gray-400 active:text-gray-600'}" }
+    %>
+
+    <%= link_to root_path, class: tab.(today_active) do %>
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke-width="1.5"/><path stroke-width="1.5" stroke-linecap="round" d="M12 7v5l3 2"/></svg>
+      Today
+    <% end %>
+
+    <%= link_to backlog_path, class: tab.(backlog_active) do %>
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+      Backlog
+    <% end %>
+
+    <%= link_to new_task_path, class: "flex flex-col items-center justify-center flex-1 min-h-[52px]" do %>
+      <span class="w-11 h-11 -mt-3 rounded-full bg-indigo-600 text-white flex items-center justify-center shadow-lg shadow-indigo-500/30 active:scale-95 transition-transform">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" stroke-linecap="round" d="M12 5v14m7-7H5"/></svg>
+      </span>
+    <% end %>
+
+    <%= link_to weekly_objectives_path, class: tab.(week_active) do %>
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+      Week
+    <% end %>
+
+    <button type="button" data-action="click->sidebar#toggle" class="<%= tab.(false) %>">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.5" stroke-width="1.5"/><circle cx="5" cy="12" r="2.5" stroke-width="1.5"/><circle cx="19" cy="12" r="2.5" stroke-width="1.5"/></svg>
+      More
+    </button>
+  </div>
+</nav>

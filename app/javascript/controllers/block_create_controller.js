@@ -1,16 +1,47 @@
 import { Controller } from "@hotwired/stimulus"
 
 // Tap an empty timeline hour -> pick a task -> create a working session block.
+// The task list is read live from the DOM so tasks just added via Turbo are
+// immediately pickable (no full page reload needed).
 export default class extends Controller {
-  static targets = ["modal", "label"]
-  static values = { date: String }
+  static targets = ["modal", "label", "list"]
+  static values = { date: String, action: String }
 
   openAt(event) {
-    // Ignore taps that land on an existing event or working-session block.
-    if (event.target.closest("[data-event-title], [data-block]")) return
+    if (event.target.closest("[data-event-title], [data-block]")) return // existing item tapped
     this.hour = parseInt(event.currentTarget.dataset.hour, 10)
     this.labelTarget.textContent = `${String(this.hour).padStart(2, "0")}:00 – ${String(this.hour + 1).padStart(2, "0")}:00`
+    this.renderTasks()
     this.modalTarget.classList.remove("hidden")
+  }
+
+  renderTasks() {
+    const rows = document.querySelectorAll("#tasks_container [data-task-id]")
+    const tasks = []
+    rows.forEach((row) => {
+      const link = row.querySelector("a[href*='/tasks/']")
+      if (!link) return
+      if (link.className.includes("line-through")) return // skip done tasks
+      tasks.push({ id: row.dataset.taskId, title: link.textContent.trim() })
+    })
+
+    if (tasks.length === 0) {
+      this.listTarget.innerHTML = `<p class="text-xs text-gray-400 text-center py-6">No open tasks for today.</p>`
+      return
+    }
+
+    this.listTarget.innerHTML = tasks
+      .map(
+        (t) => `<button type="button" data-action="click->block-create#pick" data-task-id="${t.id}"
+          class="w-full text-left px-3 py-3 rounded-xl hover:bg-indigo-50 active:bg-indigo-100 text-sm text-gray-700 transition-colors">${this.escape(t.title)}</button>`
+      )
+      .join("")
+  }
+
+  escape(s) {
+    const d = document.createElement("div")
+    d.textContent = s
+    return d.innerHTML
   }
 
   close() {
@@ -31,7 +62,7 @@ export default class extends Controller {
     // Plain form POST so the controller's redirect_back reloads the timeline.
     const form = document.createElement("form")
     form.method = "post"
-    form.action = "/working_sessions"
+    form.action = this.actionValue
     form.innerHTML = `
       <input type="hidden" name="authenticity_token">
       <input type="hidden" name="working_session[task_id]">
