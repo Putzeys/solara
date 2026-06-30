@@ -19,8 +19,9 @@ export default class extends Controller {
 
   scrollToCurrentHour() {
     const nowLine = this.element.querySelector("[data-now-line]")
-    const scrollContainer = this.element.querySelector(".overflow-y-auto")
-    if (nowLine && scrollContainer) {
+    const scrollContainer = this.element.querySelector("[data-timeline-scroll]")
+    // Only auto-scroll when the timeline is its own scroll area (desktop).
+    if (nowLine && scrollContainer && scrollContainer.scrollHeight > scrollContainer.clientHeight) {
       scrollContainer.scrollTop = nowLine.offsetTop - scrollContainer.offsetHeight / 2
     }
   }

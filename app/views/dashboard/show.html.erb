@@ -49,7 +49,7 @@
   </div>
 
   <!-- Calendar Timeline (right panel) -->
-  <div class="w-full lg:w-1/2 min-h-[60vh] lg:min-h-0 bg-white rounded-xl border border-gray-200/60 shadow-sm overflow-hidden flex flex-col"
+  <div class="w-full lg:w-1/2 lg:min-h-0 bg-white rounded-xl border border-gray-200/60 shadow-sm lg:overflow-hidden flex flex-col"
        data-controller="calendar-timeline event-popup block-create"
        data-block-create-date-value="<%= current_date.iso8601 %>"
        data-block-create-action-value="<%= working_sessions_path %>"
@@ -82,7 +82,7 @@
       <% end %>
     </div>
 
-    <div class="flex-1 overflow-y-auto p-3">
+    <div class="lg:flex-1 lg:overflow-y-auto p-3" data-timeline-scroll>
       <div class="relative">
         <% (7..22).each do |hour| %>
           <% hour_events = @calendar_events.select { |e| e.starts_at.hour == hour } %>
